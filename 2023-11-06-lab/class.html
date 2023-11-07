@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Formatting Error Detection</title>
+  <script>
+    function detectFormattingErrors() {
+      const emailInput = document.getElementById('email');
+      const phoneInput = document.getElementById('phone');
+      const urlInput = document.getElementById('url');
+      const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+      const phoneRegex = /(\+\d{1,2}\s?)?(\d{3}[-\s]?\d{3}[-\s]?\d{4}|\(\d{3}\)\s?\d{3}[-\s]?\d{4}|\d{10})/;
+      const urlRegex = /(http|https):\/\/www\.[a-zA-Z0-9.-]+\.(com|org|edu|io)/;
+
+      let valid = true;
+      let errorMessage = '';
+
+      if(!emailRegex.test(emailInput.value) || !phoneRegex.test(phoneInput.value) || !urlRegex.test(urlInput.value)){
+        if (!emailRegex.test(emailInput.value)) {
+            alert('Invalid Email Address');
+            emailInput.focus();
+        }
+      
+      if (!phoneRegex.test(phoneInput.value)) {
+            alert('Invalid Phone Number');
+            phoneInput.focus();
+        }
+      
+      if (!urlRegex.test(urlInput.value)) {
+            alert('Invalid URL');
+            urlInput.focus();
+        }
+      }
+      
+
+      if (!valid) {
+        alert(errorMessage);
+        return false;
+      }
+      return true;
+    }
+  </script>
+</head>
+<body>
+  <h1>Formatting Error Detection</h1>
+  <form onsubmit="return detectFormattingErrors();">
+    <label for="email">Email Address:</label>
+    <input type="text" id="email" name="email" required>
+    <br>
+    <label for="phone">Phone Number:</label>
+    <input type="text" id="phone" name="phone" required>
+    <br>
+    <label for="url">URL:</label>
+    <input type="text" id="url" name="url" required>
+    <br>
+    <input type="submit" value="Submit">
+  </form>
+</body>
+</html>

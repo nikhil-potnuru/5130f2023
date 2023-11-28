@@ -1,1 +1,0 @@
-We did research and added more content for the details of individual financial thinking on buying cars and also we made our calculator function better than before by adding more required improvements.  

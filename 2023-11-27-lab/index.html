@@ -1,0 +1,128 @@
+<!-- index.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PWA Example</title>
+    <link rel="stylesheet" href="styles.css">
+    <script>
+        const openWeatherMapApiKey = 'YOUR_OPENWEATHERMAP_API_KEY';
+        const geonamesApiKey = 'YOUR_GEONAMES_API_KEY';
+        const openExchangeRatesApiKey = 'YOUR_OPENEXCHANGERATES_API_KEY';
+
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    function(position) {
+                        const latitude = position.coords.latitude;
+                        const longitude = position.coords.longitude;
+
+                        // Get weather information
+                        getWeatherInfo(latitude, longitude);
+
+                        // Get local language information
+                        getLanguageInfo(latitude, longitude);
+
+                        // Get currency information
+                        getCurrencyInfo(latitude, longitude);
+                    },
+                    function(error) {
+                        handleError(error);
+                    }
+                );
+            } else {
+                alert("Geolocation is not supported by this browser.");
+            }
+        }
+
+        function getWeatherInfo(latitude, longitude) {
+            const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${openWeatherMapApiKey}`;
+
+            fetch(weatherUrl)
+                .then(response => response.json())
+                .then(data => {
+                    const weatherDescription = data.weather[0].description;
+                    const temperature = data.main.temp;
+
+                    alert(`Weather: ${weatherDescription}, Temperature: ${temperature}°C`);
+                })
+                .catch(error => {
+                    console.error('Error fetching weather data:', error);
+                });
+        }
+
+        function getLanguageInfo(latitude, longitude) {
+            const geonamesUrl = `http://api.geonames.org/findNearby?lat=${latitude}&lng=${longitude}&username=${geonamesApiKey}`;
+
+            fetch(geonamesUrl)
+                .then(response => response.json())
+                .then(data => {
+                    const countryName = data.geonames[0].countryName;
+
+                    alert(`Local Language: Information about local language in ${countryName} can be obtained from a language API.`);
+                })
+                .catch(error => {
+                    console.error('Error fetching language data:', error);
+                });
+        }
+
+        function getCurrencyInfo(latitude, longitude) {
+            const openExchangeRatesUrl = `https://open.er-api.com/v6/latest?base=USD&latitude=${latitude}&longitude=${longitude}&apiKey=${openExchangeRatesApiKey}`;
+
+            fetch(openExchangeRatesUrl)
+                .then(response => response.json())
+                .then(data => {
+                    const localCurrencyCode = data.rates[data.base];
+                    const localCurrencyRate = data.rates[localCurrencyCode];
+
+                    alert(`Local Currency: Code - ${localCurrencyCode}, Rate - ${localCurrencyRate}`);
+                })
+                .catch(error => {
+                    console.error('Error fetching currency data:', error);
+                });
+        }
+
+        function handleError(error) {
+            switch(error.code) {
+                case error.PERMISSION_DENIED:
+                    alert("User denied the request for Geolocation.");
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    alert("Location information is unavailable.");
+                    break;
+                case error.TIMEOUT:
+                    alert("The request to get user location timed out.");
+                    break;
+                case error.UNKNOWN_ERROR:
+                    alert("An unknown error occurred.");
+                    break;
+            }
+        }
+    </script>
+</head>
+<body>
+    <div id="app">
+        <h1>PWA Example</h1>
+        <div id="auth-container">
+            <button onclick="showSignUpForm()">Sign Up</button>
+            <button onclick="showSignInForm()">Sign In</button>
+            <button onclick="loginAsGuest()">Guest</button>
+        </div>
+        <div id="sign-up-form" style="display:none;">
+            <input type="email" id="signUpEmail" placeholder="Email">
+            <input type="password" id="signUpPassword" placeholder="Password">
+            <button onclick="signUp()">Create Account</button>
+        </div>
+        <div id="sign-in-form" style="display:none;">
+            <input type="email" id="signInEmail" placeholder="Email">
+            <input type="password" id="signInPassword" placeholder="Password">
+            <button onclick="signIn()">Sign In</button>
+        </div>
+    </div>
+    <h1>Get User Location</h1>
+    <button onclick="getLocation()">Get Location</button>
+    <script src="app.js"></script>
+</body>
+</html>
